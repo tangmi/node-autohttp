@@ -26,4 +26,9 @@ autohttp.register('reverse', function(data, cb) {
 	cb(null, data.split('').reverse().join(''));
 });
 
+autohttp.register('throwError', function(data, cb) {
+	// make uppercase
+	cb(new Error('hi there'));
+});
+
 app.listen(3000);

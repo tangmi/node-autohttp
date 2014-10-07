@@ -12,14 +12,21 @@ AutoHttp.prototype.attach = function(httpServer) {
 	var listeners = httpServer.listeners('request').slice(0);
 	httpServer.removeAllListeners('request');
 	httpServer.on('request', (function(req, res) {
+		if (req.url.indexOf(url) == 0) {
+			// if we aren't making a call (denoted by the presence of an
+			// x-autohttp-call) header field, then just server the js file.
+			// otherwise, we'll use the same url as an enpoint to make our
+			// fancy method calls
 
-
-		if (0 == req.url.indexOf(url)) {
 			if (!req.headers['x-autohttp-call']) {
-				this._serveJs(res);
+				// serve the generated client file
+				var body = require('./lib/gen-client')(this.__calls);
+				res.writeHead(200, {
+					'Content-Length': body.length,
+					'Content-Type': 'application/javascript'
+				});
+				res.end(body);
 			} else {
-				// console.log(req);
-
 				// TODO: GET THE BODY OUT OF THE REQUEST!!!!!
 				var dataInput = "hi there";
 
@@ -29,9 +36,16 @@ AutoHttp.prototype.attach = function(httpServer) {
 					function(err, dataOutput) {
 						// TODO: handle errs
 						// console.log(req.headers);
-
+						var errPayload;
+						if (err) {
+							errPayload = {
+								message: err.message,
+								//TODO: turn off stack by default
+								stack: err.stack
+							};
+						}
 						var body = JSON.stringify({
-							err: err,
+							err: errPayload,
 							payload: JSON.stringify(dataOutput)
 						});
 						res.writeHead(200, {
@@ -42,21 +56,12 @@ AutoHttp.prototype.attach = function(httpServer) {
 					});
 			}
 		} else {
+			// replay the user's listeners
 			for (var i = 0; i < listeners.length; i++) {
 				listeners[i].call(httpServer, req, res);
 			}
 		}
 	}).bind(this));
-
-};
-
-AutoHttp.prototype._serveJs = function serve(res) {
-	var body = require('./lib/gen-client')(this.__calls);
-	res.writeHead(200, {
-		'Content-Length': body.length,
-		'Content-Type': 'application/javascript'
-	});
-	res.end(body);
 };
 
 AutoHttp.prototype._handleCall = function(callName, data, cb) {
@@ -88,6 +93,5 @@ AutoHttp.prototype.register = function(name, fn) {
 	// allow chaining
 	return this;
 };
-
 
 module.exports = AutoHttp;

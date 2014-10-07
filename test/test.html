@@ -15,6 +15,20 @@
 			out.push(('autohttp.' + name + ' = ' + autohttp[name]).replace(/\t/g, '  '));
 		}
 		document.getElementById('pre').innerHTML = out.join('\n');
+
+
+		autohttp.capitalize('(data is not passed through yet)', function() {
+			console.log(arguments);
+		});
+
+		autohttp.reverse('(data is not passed through yet)', function() {
+			console.log(arguments);
+		});
+
+		autohttp.throwError('(data is not passed through yet)', function() {
+			console.log(arguments);
+		});
+
 	}, 100);
 	</script>
 </body>
