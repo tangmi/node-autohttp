@@ -1,0 +1,30 @@
+{
+  "name": "autohttp",
+  "version": "0.0.0",
+  "description": "automatically generate the http layer between a client and server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tangmi/node-autohttp"
+  },
+  "keywords": [
+    "auto",
+    "automatic",
+    "http",
+    "layer",
+    "client",
+    "server"
+  ],
+  "author": "tangmi",
+  "license": "MPL 2.0",
+  "bugs": {
+    "url": "https://github.com/tangmi/node-autohttp/issues"
+  },
+  "homepage": "https://github.com/tangmi/node-autohttp",
+  "dependencies": {
+    "what": "git://github.com/tangmi/what"
+  }
+}
