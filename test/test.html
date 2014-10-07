@@ -6,7 +6,16 @@
 </head>
 <body>
 	<h1>welcome to the test</h1>
-
+	<pre id="pre"></pre>
 	<script src="/autohttp.js"></script>
+	<script>
+	setTimeout(function() {
+		out = [];
+		for (var name in autohttp) {
+			out.push(('autohttp.' + name + ' = ' + autohttp[name]).replace(/\t/g, '  '));
+		}
+		document.getElementById('pre').innerHTML = out.join('\n');
+	}, 100);
+	</script>
 </body>
 </html>

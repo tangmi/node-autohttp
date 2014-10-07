@@ -30,7 +30,10 @@ AutoHttp.prototype.attach = function(httpServer) {
 						// TODO: handle errs
 						// console.log(req.headers);
 
-						var body = JSON.stringify(dataOutput);
+						var body = JSON.stringify({
+							err: err,
+							payload: JSON.stringify(dataOutput)
+						});
 						res.writeHead(200, {
 							'Content-Length': body.length,
 							'Content-Type': 'application/json'

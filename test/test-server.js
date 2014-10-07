@@ -15,4 +15,15 @@ autohttp.register('capitalize', function(data, cb) {
 	cb(null, data.toUpperCase());
 });
 
+autohttp.register('addKey', function(data, cb) {
+	// make uppercase
+	data.poop = 'poop';
+	cb(null, data);
+});
+
+autohttp.register('reverse', function(data, cb) {
+	// make uppercase
+	cb(null, data.split('').reverse().join(''));
+});
+
 app.listen(3000);
