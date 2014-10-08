@@ -33,7 +33,13 @@ autohttp.register('reverse', function(data, cb) {
 
 autohttp.register('throwError', function(data, cb) {
 	// make uppercase
-	cb(new Error('hi there'));
+	cb(new Error('hi, this is an error generated on the server!'));
+});
+
+autohttp.register('readFile', function(data, cb) {
+	require('fs').readFile(__dirname + '/test-file.txt', function(err, data) {
+		cb(err, data.toString());
+	});
 });
 
 app.listen(3000);

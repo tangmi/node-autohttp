@@ -17,17 +17,33 @@
 		document.getElementById('pre').innerHTML = out.join('\n');
 
 
-		autohttp.capitalize('(data is not passed through yet)', function() {
+		autohttp.capitalize('this will wait a second before returning', function() {
+			console.log('"capitalize" response:');
 			console.log(arguments);
 		});
 
-		autohttp.reverse('(data is not passed through yet)', function() {
+		autohttp.reverse('reverse this string lol idk', function() {
+			console.log('"reverse" response:');
 			console.log(arguments);
 		});
 
-		autohttp.throwError('(data is not passed through yet)', function() {
+		autohttp.throwError('throw some error', function() {
+			console.log('"throwError" response:');
 			console.log(arguments);
 		});
+
+		autohttp.addKey({
+			"name": "michael tang"
+		}, function() {
+			console.log('"addKey" response:');
+			console.log(arguments);
+		});
+
+		autohttp.readFile(null, function() {
+			console.log('"readFile" response:');
+			console.log(arguments);
+		});
+
 
 	}, 100);
 	</script>

@@ -36,25 +36,7 @@ AutoHttp.prototype.attach = function(httpServer) {
 						req.headers['x-autohttp-call'],
 						dataInput,
 						function(err, dataOutput) {
-							// TODO: handle errs
-							// console.log(req.headers);
-							var errPayload;
-							if (err) {
-								errPayload = {
-									message: err.message,
-									//TODO: turn off stack by default
-									stack: err.stack
-								};
-							}
-							var body = JSON.stringify({
-								err: errPayload,
-								payload: JSON.stringify(dataOutput)
-							});
-							res.writeHead(200, {
-								'Content-Length': body.length,
-								'Content-Type': 'application/json'
-							});
-							res.end(body);
+							writeResponse(res, err, dataOutput);
 						});
 				}).bind(this));
 			}
@@ -85,6 +67,26 @@ function readBody(req, cb) {
 	req.on('error', function(e) {
 		cb(e);
 	});
+}
+
+function writeResponse(res, err, payload) {
+	var errPayload;
+	if (err) {
+		errPayload = {
+			message: err.message,
+			//TODO: turn off stack by default
+			stack: err.stack
+		};
+	}
+	var body = JSON.stringify({
+		err: errPayload,
+		payload: JSON.stringify(payload)
+	});
+	res.writeHead(200, {
+		'Content-Length': body.length,
+		'Content-Type': 'application/json'
+	});
+	res.end(body);
 }
 
 AutoHttp.prototype._handleCall = function(callName, data, cb) {
