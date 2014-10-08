@@ -27,33 +27,36 @@ AutoHttp.prototype.attach = function(httpServer) {
 				});
 				res.end(body);
 			} else {
-				// TODO: GET THE BODY OUT OF THE REQUEST!!!!!
-				var dataInput = "hi there";
+				readBody(req, (function(err, dataInput) {
+					if (err) {
+						// TODO: handle request body read error
+					}
 
-				this._handleCall(
-					req.headers['x-autohttp-call'],
-					dataInput,
-					function(err, dataOutput) {
-						// TODO: handle errs
-						// console.log(req.headers);
-						var errPayload;
-						if (err) {
-							errPayload = {
-								message: err.message,
-								//TODO: turn off stack by default
-								stack: err.stack
-							};
-						}
-						var body = JSON.stringify({
-							err: errPayload,
-							payload: JSON.stringify(dataOutput)
+					this._handleCall(
+						req.headers['x-autohttp-call'],
+						dataInput,
+						function(err, dataOutput) {
+							// TODO: handle errs
+							// console.log(req.headers);
+							var errPayload;
+							if (err) {
+								errPayload = {
+									message: err.message,
+									//TODO: turn off stack by default
+									stack: err.stack
+								};
+							}
+							var body = JSON.stringify({
+								err: errPayload,
+								payload: JSON.stringify(dataOutput)
+							});
+							res.writeHead(200, {
+								'Content-Length': body.length,
+								'Content-Type': 'application/json'
+							});
+							res.end(body);
 						});
-						res.writeHead(200, {
-							'Content-Length': body.length,
-							'Content-Type': 'application/json'
-						});
-						res.end(body);
-					});
+				}).bind(this));
 			}
 		} else {
 			// replay the user's listeners
@@ -63,6 +66,26 @@ AutoHttp.prototype.attach = function(httpServer) {
 		}
 	}).bind(this));
 };
+
+function readBody(req, cb) {
+	var chunks = [];
+	req.on('data', function(chunk) {
+		chunks.push(chunk);
+	});
+	req.on('end', function() {
+		var data = Buffer.concat(chunks).toString()
+		try {
+			data = JSON.parse(data);
+		} catch (e) {
+			// TODO: more graceful error handling
+			throw e;
+		}
+		cb(null, data);
+	});
+	req.on('error', function(e) {
+		cb(e);
+	});
+}
 
 AutoHttp.prototype._handleCall = function(callName, data, cb) {
 	if (!this.__calls[callName]) {
